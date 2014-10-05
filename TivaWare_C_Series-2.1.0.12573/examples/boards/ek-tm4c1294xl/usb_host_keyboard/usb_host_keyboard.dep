@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>3673146912</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\ewarm\Exe\driverlib.a</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\drivers\pinout.c</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\usblib\ewarm\Exe\usblib.a</file>
+      <file>$PROJ_DIR$\usb_host_keyboard.c</file>
+    </outputs>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

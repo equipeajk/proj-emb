@@ -1,0 +1,227 @@
+###############################################################################
+#                                                                             #
+# IAR ELF Linker V6.60.1.5097/W32 for ARM               04/Oct/2014  18:00:38 #
+# Copyright 2007-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Output file  =  C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_ #
+#                    C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\hello #
+#                    \ewarm\Exe\hello.out                                     #
+#    Map file     =  C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_ #
+#                    C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\hello #
+#                    \ewarm\List\hello.map                                    #
+#    Command line =  C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_ #
+#                    C_Series-2.1.0.12573\driverlib\ewarm\Exe\driverlib.a     #
+#                    C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_ #
+#                    C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\hello #
+#                    \ewarm\Obj\hello.o C:\Users\Usuário\Documents\ecomp\TCC\ #
+#                    Embarcado\TivaWare_C_Series-2.1.0.12573\examples\boards\ #
+#                    ek-tm4c1294xl\hello\ewarm\Obj\pinout.o                   #
+#                    C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_ #
+#                    C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\hello #
+#                    \ewarm\Obj\startup_ewarm.o C:\Users\Usuário\Documents\ec #
+#                    omp\TCC\Embarcado\TivaWare_C_Series-2.1.0.12573\examples #
+#                    \boards\ek-tm4c1294xl\hello\ewarm\Obj\uartstdio.o        #
+#                    --redirect _Printf=_PrintfTiny --redirect                #
+#                    _Scanf=_ScanfSmall -o C:\Users\Usuário\Documents\ecomp\T #
+#                    CC\Embarcado\TivaWare_C_Series-2.1.0.12573\examples\boar #
+#                    ds\ek-tm4c1294xl\hello\ewarm\Exe\hello.out --map         #
+#                    C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_ #
+#                    C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\hello #
+#                    \ewarm\List\hello.map --config                           #
+#                    C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_ #
+#                    C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\hello #
+#                    \hello.icf --semihosting --entry __iar_program_start     #
+#                    --vfe                                                    #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A1":  place at start of [0x00000000-0x000fffff] { ro section .intvec };
+"P1":  place in [from 0x00000000 to 0x000fffff] { ro };
+"P2":  place in [from 0x20000000 to 0x2003ffff] { rw, block HEAP };
+
+  Section          Kind        Address   Size  Object
+  -------          ----        -------   ----  ------
+"A1":                                   0x200
+  .intvec          const    0x00000000  0x200  startup_ewarm.o [1]
+                          - 0x00000200  0x200
+
+"P1":                                   0xc18
+  .text            ro code  0x00000200  0x408  sysctl.o [4]
+  .text            ro code  0x00000608  0x264  uartstdio.o [1]
+  .text            ro code  0x0000086c   0x66  ABImemset.o [6]
+  .text            ro code  0x000008d2   0x22  zero_init3.o [6]
+  .text            ro code  0x000008f4  0x24c  pinout.o [1]
+  .text            ro code  0x00000b40  0x14a  gpio.o [4]
+  .text            ro code  0x00000c8c   0xcc  hello.o [1]
+  .text            ro code  0x00000d58   0x28  data_init.o [6]
+  .iar.init_table  const    0x00000d80   0x10  - Linker created -
+  .text            ro code  0x00000d90   0x1a  startup_ewarm.o [1]
+  .text            ro code  0x00000daa    0xc  cstartup_M.o [6]
+  .text            ro code  0x00000db8   0x1a  fpinit_M.o [5]
+  .text            ro code  0x00000dd4   0x1a  cmain.o [6]
+  .text            ro code  0x00000dee    0x4  low_level_init.o [3]
+  .text            ro code  0x00000df2    0x4  exit.o [3]
+  .text            ro code  0x00000df8    0xa  cexit.o [6]
+  .text            ro code  0x00000e04   0x14  exit.o [7]
+  .rodata          const    0x00000e18    0x0  zero_init3.o [6]
+                          - 0x00000e18  0xc18
+
+"P2", part 1 of 2:                        0xc
+  .bss             zero     0x20000000    0x8  uartstdio.o [1]
+  .bss             zero     0x20000008    0x4  hello.o [1]
+                          - 0x2000000c    0xc
+
+"P2", part 2 of 2:                      0x200
+  .noinit          uninit   0x2000000c  0x200  startup_ewarm.o [1]
+                          - 0x2000020c  0x200
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0xc:
+          0x20000000   0xc
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module            ro code  ro data  rw data
+    ------            -------  -------  -------
+C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\hello\ewarm\Obj: [1]
+    hello.o               204                 4
+    pinout.o              588
+    startup_ewarm.o        26      512      512
+    uartstdio.o           612                 8
+    -------------------------------------------
+    Total:              1 430      512      524
+
+command line: [2]
+    -------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    exit.o                  4
+    low_level_init.o        4
+    -------------------------------------------
+    Total:                  8
+
+driverlib.a: [4]
+    gpio.o                330
+    sysctl.o            1 032
+    -------------------------------------------
+    Total:              1 362
+
+m7M_tlv.a: [5]
+    fpinit_M.o             26
+    -------------------------------------------
+    Total:                 26
+
+rt7M_tl.a: [6]
+    ABImemset.o           102
+    cexit.o                10
+    cmain.o                26
+    cstartup_M.o           12
+    data_init.o            40
+    zero_init3.o           34
+    -------------------------------------------
+    Total:                224
+
+shb_l.a: [7]
+    exit.o                 20
+    -------------------------------------------
+    Total:                 20
+
+    Gaps                   10
+    Linker created                  16
+-----------------------------------------------
+    Grand Total:        3 080      528      524
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+?main                   0x00000dd5         Code  Gb  cmain.o [6]
+ConfigureUART           0x00000c8d   0x44  Code  Gb  hello.o [1]
+FaultISR                0x00000da7    0x2  Code  Lc  startup_ewarm.o [1]
+GPIODirModeSet          0x00000b41   0x28  Code  Gb  gpio.o [4]
+GPIOPadConfigSet        0x00000b69   0xfe  Code  Gb  gpio.o [4]
+GPIOPinTypeEthernetLED  0x00000c87    0x4  Code  Gb  gpio.o [4]
+GPIOPinWrite            0x00000c67    0x6  Code  Gb  gpio.o [4]
+IntDefaultHandler       0x00000da9    0x2  Code  Lc  startup_ewarm.o [1]
+LEDWrite                0x00000a6b   0x68  Code  Gb  pinout.o [1]
+NmiSR                   0x00000da5    0x2  Code  Lc  startup_ewarm.o [1]
+PinoutSet               0x000008f5  0x176  Code  Gb  pinout.o [1]
+Region$$Table$$Base     0x00000d80          --   Gb  - Linker created -
+Region$$Table$$Limit    0x00000d90          --   Gb  - Linker created -
+ResetISR                0x00000d91    0xe  Code  Gb  startup_ewarm.o [1]
+SysCtlClockFreqSet      0x00000229  0x1ea  Code  Gb  sysctl.o [4]
+SysCtlDelay             0x00000221    0x8  Code  Gb  sysctl.o [4]
+UARTStdioConfig         0x00000609   0x50  Code  Gb  uartstdio.o [1]
+UARTprintf              0x0000082b    0xe  Code  Gb  uartstdio.o [1]
+UARTvprintf             0x0000068f  0x184  Code  Gb  uartstdio.o [1]
+UARTwrite               0x00000659   0x36  Code  Gb  uartstdio.o [1]
+_SysCtlMemTimingGet     0x00000201   0x20  Code  Lc  sysctl.o [4]
+__aeabi_memset          0x0000086d         Code  Gb  ABImemset.o [6]
+__cmain                 0x00000dd5         Code  Gb  cmain.o [6]
+__exit                  0x00000e05   0x14  Code  Gb  exit.o [7]
+__iar_Memset            0x0000086d         Code  Gb  ABImemset.o [6]
+__iar_Memset_word       0x00000875         Code  Gb  ABImemset.o [6]
+__iar_data_init3        0x00000d59   0x28  Code  Gb  data_init.o [6]
+__iar_init_vfp          0x00000db9         Code  Gb  fpinit_M.o [5]
+__iar_program_start     0x00000dab         Code  Gb  cstartup_M.o [6]
+__iar_zero_init3        0x000008d3   0x22  Code  Gb  zero_init3.o [6]
+__low_level_init        0x00000def    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x00000000  0x200  Data  Gb  startup_ewarm.o [1]
+_call_main              0x00000de1         Code  Gb  cmain.o [6]
+_exit                   0x00000df9         Code  Gb  cexit.o [6]
+_main                   0x00000deb         Code  Gb  cmain.o [6]
+exit                    0x00000df3    0x4  Code  Gb  exit.o [3]
+g_pppui32XTALtoVCO      0x000004b0  0x120  Data  Lc  sysctl.o [4]
+g_pui32VCOFrequencies   0x00000600    0x8  Data  Lc  sysctl.o [4]
+g_pui32Xtals            0x00000444   0x6c  Data  Lc  sysctl.o [4]
+g_sXTALtoMEMTIM         0x000005d0   0x30  Data  Lc  sysctl.o [4]
+g_ui32Base              0x20000004    0x4  Data  Lc  uartstdio.o [1]
+g_ui32SysClock          0x20000008    0x4  Data  Gb  hello.o [1]
+g_ui32UARTBase          0x00000854    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTPeriph        0x00000860    0xc  Data  Lc  uartstdio.o [1]
+main                    0x00000cd1   0x48  Code  Gb  hello.o [1]
+pui32Stack              0x2000000c  0x200  Data  Lc  startup_ewarm.o [1]
+
+
+[1] = C:\Users\Usuário\Documents\ecomp\TCC\Embarcado\TivaWare_C_Series-2.1.0.12573\examples\boards\ek-tm4c1294xl\hello\ewarm\Obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = driverlib.a
+[5] = m7M_tlv.a
+[6] = rt7M_tl.a
+[7] = shb_l.a
+
+  3 080 bytes of readonly  code memory
+    528 bytes of readonly  data memory
+    524 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

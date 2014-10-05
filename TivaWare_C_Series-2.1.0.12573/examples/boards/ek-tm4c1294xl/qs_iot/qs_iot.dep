@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>3428717110</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\drivers\pinout.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\flash_pb.c</file>
+      <file>$PROJ_DIR$\..\drivers\http.c</file>
+      <file>$PROJ_DIR$\requests.c</file>
+      <file>$PROJ_DIR$\stats.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\ringbuf.c</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\tictactoe.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\ustdlib.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\lwiplib.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\locator.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\exosite\exosite_meta.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\cmdline.c</file>
+      <file>$PROJ_DIR$\commands.c</file>
+      <file>$PROJ_DIR$\..\drivers\buttons.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\ewarm\Exe\driverlib.a</file>
+      <file>$PROJ_DIR$\..\drivers\eth_client_lwip.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\exosite\exosite.c</file>
+      <file>$PROJ_DIR$\..\drivers\exosite_hal_lwip.c</file>
+      <file>$PROJ_DIR$\qs_iot.c</file>
+    </outputs>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

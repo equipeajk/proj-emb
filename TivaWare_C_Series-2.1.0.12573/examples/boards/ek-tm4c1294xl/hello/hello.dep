@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>1530483300</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_ints.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_uart.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_nvic.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_types.h</file>
+      <file>$PROJ_DIR$\..\drivers\pinout.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_memmap.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\gpio.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\pin_map.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\rom.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\uart.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\rom_map.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\sysctl.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\debug.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\interrupt.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_gpio.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\ewarm\Exe\driverlib.a</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\hello.c</file>
+      <file>$PROJ_DIR$\..\drivers\pinout.c</file>
+      <file>$PROJ_DIR$\ewarm\Obj\hello.o</file>
+      <file>$PROJ_DIR$\ewarm\Exe\hello.bin</file>
+      <file>$PROJ_DIR$\ewarm\Obj\pinout.o</file>
+      <file>$PROJ_DIR$\ewarm\Obj\pinout.pbi</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.pbi</file>
+      <file>$PROJ_DIR$\ewarm\Exe\hello.out</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.o</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.pbi</file>
+      <file>$PROJ_DIR$\ewarm\Obj\hello.pbd</file>
+      <file>$PROJ_DIR$\ewarm\Obj\hello.pbi</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tlv.a</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$PROJ_DIR$\ewarm\List\hello.map</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$PROJ_DIR$\hello.icf</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\sysctl.c</file>
+      <file>$PROJ_DIR$\..\qs_iot\stats.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\ringbuf.c</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 35</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 36</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 4 8 3 1 5 6 2 0 18 7 13 11 9 23 24 17 21 22 19 20</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 4 8 3 1 5 6 2 0 18 7 13 11 9 23 24 17 21 22 19 20</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\startup_ewarm.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4 8 3 1 5 6 2 0 10 11</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4 8 3 1 5 6 2 0 10 11</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\hello.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 31</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 41</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4 8 3 1 5 6 2 0 16 13 11 14 12 15 17 21 22 19 20 18</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4 8 3 1 5 6 2 0 16 13 11 14 12 15 17 21 22 19 20 18</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\drivers\pinout.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 33</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 34</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 16 4 8 3 1 5 6 2 0 25 13 11 14 15 17 21 22 12</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 4 8 3 1 5 6 2 0 25 13 11 14 15 17 21 22 12</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ewarm\Exe\hello.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 44</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 32</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 46 26 31 33 38 35 43 47 42 45</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 37 44</file>
+        </tool>
+      </outputs>
+    </file>
+  </configuration>
+</project>
+
+

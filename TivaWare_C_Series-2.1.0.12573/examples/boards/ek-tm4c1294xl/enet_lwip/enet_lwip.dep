@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>3651447741</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\src\ff.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\lwiplib.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\locator.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\lwip-1.4.1\apps\httpserver_raw\httpd.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\fatfs\port\mmc-ek-tm4c1294xl.c</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\..\drivers\pinout.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\ustdlib.c</file>
+      <file>$PROJ_DIR$\enet_fs.c</file>
+      <file>$PROJ_DIR$\enet_lwip.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\ewarm\Exe\driverlib.a</file>
+    </outputs>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

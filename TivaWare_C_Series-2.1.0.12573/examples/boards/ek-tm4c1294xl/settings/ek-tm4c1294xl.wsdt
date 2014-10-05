@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+    
+    
+  <CurrentConfigs><Project>driverlib/Debug</Project><Project>usblib/Debug</Project><Project>bitband/Debug</Project><Project>enet_uip/Debug</Project><Project>enet_weather/Debug</Project><Project>hello/Debug</Project><Project>gpio_jtag/Debug</Project><Project>blinky/Debug</Project><Project>enet_lwip/Debug</Project><Project>enet_io/Debug</Project><Project>usb_dev_keyboard/Debug</Project><Project>usb_host_mouse/Debug</Project><Project>usb_host_keyboard/Debug</Project><Project>qs_iot/Debug</Project><Project>sleep_modes/Debug</Project><Project>timers/Debug</Project><Project>uart_echo/Debug</Project><Project>udma_demo/Debug</Project><Project>usb_dev_cserial/Debug</Project><Project>usb_dev_bulk/Debug</Project><Project>hibernate/Debug</Project><Project>interrupts/Debug</Project><Project>mpu_fault/Debug</Project><Project>usb_host_msc/Debug</Project><Project>usb_stick_demo/Debug</Project><Project>usb_stick_update/Debug</Project><Project>watchdog/Debug</Project></CurrentConfigs><CurrentProj>blinky</CurrentProj><OverviewSelected>1</OverviewSelected></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>265</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1035</ColumnWidth1><ColumnWidth2>276</ColumnWidth2><ColumnWidth3>69</ColumnWidth3></Build>
+      <TerminalIO/>
+      <Debug-Log>
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1381</ColumnWidth1></Debug-Log>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-10821-31691</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>&lt;ws&gt;</ExpandedNode><ExpandedNode>&lt;ws&gt;/qs_iot</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-17388-31773</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-324-553</Identity>
+            <TabName>Debug Log</TabName>
+            <Factory>Debug-Log</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\hello\hello.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>93</YPos2><SelStart2>3542</SelStart2><SelEnd2>3542</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\driverlib\sysctl.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1796</YPos2><SelStart2>75337</SelStart2><SelEnd2>75337</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\qs_iot\stats.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>142</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\utils\ringbuf.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>15</YPos2><SelStart2>1302</SelStart2><SelEnd2>1309</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\blinky\blinky.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>33</YPos2><SelStart2>2062</SelStart2><SelEnd2>2062</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\uart_echo\uart_echo.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>45</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\uart_echo\startup_ewarm.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>276</YPos2><SelStart2>1434</SelStart2><SelEnd2>1434</SelEnd2></Tab><ActiveTab>6</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-00e61ea0><key>iaridepm.enu1</key></Toolbar-00e61ea0></Sizes></Row0><Row1><Sizes/></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>575</Bottom><Right>356</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>138889</sizeHorzCX><sizeHorzCY>244499</sizeHorzCY><sizeVertCX>248611</sizeVertCX><sizeVertCY>705379</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>198</Bottom><Right>1442</Right><x>-2</x><y>-2</y><xscreen>1444</xscreen><yscreen>200</yscreen><sizeHorzCX>1002778</sizeHorzCX><sizeHorzCY>244499</sizeHorzCY><sizeVertCX>138889</sizeVertCX><sizeVertCY>244499</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

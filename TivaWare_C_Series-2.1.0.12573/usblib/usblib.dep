@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>323061280</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\device\usbdaudio.c</file>
+      <file>$PROJ_DIR$\device\usbdbulk.c</file>
+      <file>$PROJ_DIR$\usbbuffer.c</file>
+      <file>$PROJ_DIR$\device\usbdcdesc.c</file>
+      <file>$PROJ_DIR$\device\usbdcdc.c</file>
+      <file>$PROJ_DIR$\device\usbdcomp.c</file>
+      <file>$PROJ_DIR$\device\usbdconfig.c</file>
+      <file>$PROJ_DIR$\device\usbddfu-rt.c</file>
+      <file>$PROJ_DIR$\device\usbdenum.c</file>
+      <file>$PROJ_DIR$\usbdesc.c</file>
+      <file>$PROJ_DIR$\device\usbdhandler.c</file>
+      <file>$PROJ_DIR$\device\usbdhid.c</file>
+      <file>$PROJ_DIR$\device\usbdhidgamepad.c</file>
+      <file>$PROJ_DIR$\device\usbdhidkeyb.c</file>
+      <file>$PROJ_DIR$\device\usbdhidmouse.c</file>
+      <file>$PROJ_DIR$\usbdma.c</file>
+      <file>$PROJ_DIR$\device\usbdmsc.c</file>
+      <file>$PROJ_DIR$\host\usbhaudio.c</file>
+      <file>$PROJ_DIR$\host\usbhhid.c</file>
+      <file>$PROJ_DIR$\host\usbhhidkeyboard.c</file>
+      <file>$PROJ_DIR$\host\usbhhidmouse.c</file>
+      <file>$PROJ_DIR$\host\usbhhub.c</file>
+      <file>$PROJ_DIR$\host\usbhscsi.c</file>
+      <file>$PROJ_DIR$\host\usbhostenum.c</file>
+      <file>$PROJ_DIR$\host\usbhmsc.c</file>
+      <file>$PROJ_DIR$\usbkeyboardmap.c</file>
+      <file>$PROJ_DIR$\usbmode.c</file>
+      <file>$PROJ_DIR$\usbringbuf.c</file>
+      <file>$PROJ_DIR$\usbtick.c</file>
+      <file>$PROJ_DIR$\usbulpi.c</file>
+    </outputs>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>IARCHIVE</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+
