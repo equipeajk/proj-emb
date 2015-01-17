@@ -119,7 +119,6 @@ void PCD_ReadMultipleRegister(	byte reg,		///< The register to read from. One of
 	if (count == 0) {
 		return;
 	}
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0);
 	byte *TxBufferDin;
 	byte *RxBufferDin;
 
@@ -138,12 +137,14 @@ void PCD_ReadMultipleRegister(	byte reg,		///< The register to read from. One of
 	}
 	TxBufferDin[count] = 0;
 
-	masterTransaction.count = 2;
+	masterTransaction.count = count+1;
 	masterTransaction.txBuf = (Ptr)TxBufferDin;
 	masterTransaction.rxBuf = (Ptr)RxBufferDin;
 
+	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0);
 	transferOK = SPI_transfer(spiHandle, &masterTransaction);
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4);
+
 	if(rxAlign){
 		byte mask = 0;
 		byte i = 0;
@@ -155,7 +156,9 @@ void PCD_ReadMultipleRegister(	byte reg,		///< The register to read from. One of
 					// Apply mask to both current value of values[0] and the new data in value.
 		values[0] = (values[0] & ~mask) | (RxBufferDin[1] & mask);
 	}
-
+	else{
+		values[0] = RxBufferDin[1];
+	}
 	for(j = 2; j <= count; j++){
 		values[j-1] = RxBufferDin[j];
 	}
@@ -1141,8 +1144,10 @@ void PICC_DumpToSerial(Uid *uid	///< Pointer to Uid struct returned from a succe
 	// PICC type
 	byte piccType = PICC_GetType(uid->sak);
 	System_printf("PICC type: ");
-	System_printf(PICC_GetTypeName(piccType));
 
+	System_printf(PICC_GetTypeName(piccType));
+	System_printf("\n");
+	System_flush();
 	// Dump contents
 	switch (piccType) {
 		case PICC_TYPE_MIFARE_MINI:
@@ -1212,6 +1217,7 @@ void PICC_DumpMifareClassicToSerial(	Uid *uid,		///< Pointer to Uid struct retur
 	// Dump sectors, highest address first.
 	if (no_of_sectors) {
 		System_printf("Sector Block   0  1  2  3   4  5  6  7   8  9 10 11  12 13 14 15  AccessBits\n");
+		System_flush();
 		char i = 0;
 		for (i = no_of_sectors - 1; i >= 0; i--) {
 			PICC_DumpMifareClassicSectorToSerial(uid, key, i);
@@ -1268,28 +1274,32 @@ void PICC_DumpMifareClassicSectorToSerial(Uid *uid,			///< Pointer to Uid struct
 	byte buffer[18];
 	byte blockAddr;
 	isSectorTrailer = true;
-	char blockOffset = 0;
+	signed char blockOffset = 0;
 	for (blockOffset = no_of_blocks - 1; blockOffset >= 0; blockOffset--) {
 		blockAddr = firstBlock + blockOffset;
 		// Sector number - only on first line
 		if (isSectorTrailer) {
 			System_printf(sector < 10 ? "   " : "  "); // Pad with spaces
-			System_printf(sector);
+			System_printf("%x", sector);
 			System_printf("   ");
+			System_flush();
 		}
 		else {
 			System_printf("       ");
+			System_flush();
 		}
 		// Block number
 		System_printf(blockAddr < 10 ? "   " : (blockAddr < 100 ? "  "	 : " ")); // Pad with spaces
-		System_printf(blockAddr);
+		System_printf("%x", blockAddr);
 		System_printf("  ");
+		System_flush();
 		// Establish encrypted communications before reading the first block
 		if (isSectorTrailer) {
 			status = PCD_Authenticate(PICC_CMD_MF_AUTH_KEY_A, firstBlock, key, uid);
 			if (status != STATUS_OK) {
 				System_printf("PCD_Authenticate() failed: ");
 				System_printf(GetStatusCodeName(status));
+				System_flush();
 				return;
 			}
 		}
@@ -1300,16 +1310,18 @@ void PICC_DumpMifareClassicSectorToSerial(Uid *uid,			///< Pointer to Uid struct
 			System_printf("MIFARE_Read() failed: ");
 			System_printf(GetStatusCodeName(status));
 			System_printf("\n");
+			System_flush();
 			continue;
 		}
 		// Dump data
 		byte index = 0;
 		for (index = 0; index < 16; index++) {
 			System_printf(buffer[index] < 0x10 ? " 0" : " ");
-			System_printf(buffer[index]); //HEX
+			System_printf("%x", buffer[index]); //HEX
 			if ((index % 4) == 3) {
 				System_printf(" ");
 			}
+			System_flush();
 		}
 		// Parse sector trailer data
 		if (isSectorTrailer) {
@@ -1340,13 +1352,14 @@ void PICC_DumpMifareClassicSectorToSerial(Uid *uid,			///< Pointer to Uid struct
 		if (firstInGroup) {
 			// Print access bits
 			System_printf(" [ ");
-			System_printf((g[group] >> 2) & 1); /*DEC*/ System_printf(" ");
-			System_printf((g[group] >> 1) & 1); /* DEC*/ System_printf(" ");
-			System_printf((g[group] >> 0) & 1); /*DEC*/
+			System_printf("%x", (g[group] >> 2) & 1); /*DEC*/ System_printf(" ");
+			System_printf("%x", (g[group] >> 1) & 1); /* DEC*/ System_printf(" ");
+			System_printf("%x", (g[group] >> 0) & 1); /*DEC*/
 			System_printf(" ] ");
 			if (invertedError) {
 				System_printf(" Inverted access bits did not match! ");
 			}
+			System_flush();
 		}
 
 		if (group != 3 && (g[group] == 1 || g[group] == 6)) { // Not a sector trailer, a value block
@@ -1355,6 +1368,7 @@ void PICC_DumpMifareClassicSectorToSerial(Uid *uid,			///< Pointer to Uid struct
 			System_printf(" Adr=0x"); System_printf(buffer[12]); //HEX
 		}
 		System_printf("\n");
+		System_flush();
 	}
 
 	return;
