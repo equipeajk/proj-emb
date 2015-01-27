@@ -21,6 +21,7 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include <xdc/runtime/System.h>
+#include <ti/sysbios/knl/Clock.h>
 extern SPI_Handle spiHandle;
 extern SPI_Transaction masterTransaction;
 
@@ -226,15 +227,15 @@ byte PCD_CalculateCRC(	byte *data,		///< In: Pointer to the data to transfer to 
 	PCD_WriteMultipleRegister(FIFODataReg, length, data);	// Write data to the FIFO
 	PCD_WriteRegister(CommandReg, PCD_CalcCRC);		// Start the calculation
 
-	// Wait for the CRC calculation to complete. Each iteration of the while-loop takes 17.73�s.
-	byte i = 500000;
+	// Wait for the CRC calculation to complete. Each iteration of the while-loop takes 17.73us.
+	Uint32 i = Clock_getTicks();
 	byte n;
 	while (1) {
 		n = PCD_ReadRegister(DivIrqReg);	// DivIrqReg[7..0] bits are: Set2 reserved reserved MfinActIRq reserved CRCIRq reserved reserved
 		if (n & 0x04) {						// CRCIRq bit set - calculation done
 			break;
 		}
-		if (--i == 0) {						// The emergency break. We will eventually terminate on this one after 89ms. Communication with the MFRC522 might be down.
+		if (Clock_getTicks()-i > 10) {						// The emergency break. We will eventually terminate on this one after 89ms. Communication with the MFRC522 might be down.
 			return STATUS_TIMEOUT;
 		}
 	}
@@ -259,7 +260,7 @@ void PCD_Reset() {
 	PCD_WriteRegister(CommandReg, PCD_SoftReset);	// Issue the SoftReset command.
 	// The datasheet does not mention how long the SoftRest command takes to complete.
 	// But the MFRC522 might have been in soft power-down mode (triggered by bit 4 of CommandReg)
-	// Section 8.8.2 in the datasheet says the oscillator start-up time is the start up time of the crystal + 37,74�s. Let us be generous: 50ms.
+	// Section 8.8.2 in the datasheet says the oscillator start-up time is the start up time of the crystal + 37,74ms. Let us be generous: 50ms.
 	//delay(50);
 	// Wait for the PowerDown bit in CommandReg to be cleared
 	while (PCD_ReadRegister(CommandReg) & (1<<4)) {
@@ -347,7 +348,7 @@ byte PCD_CommunicateWithPICC(	byte command,		///< The command to execute. One of
 										bool checkCRC		///< In: True => The last two bytes of the response is assumed to be a CRC_A that must be validated.
 									 ) {
 	byte n, _validBits;
-	unsigned int i;
+	Uint32 i;
 
 	// Prepare values for BitFramingReg
 	byte txLastBits = validBits ? *validBits : 0;
@@ -365,8 +366,8 @@ byte PCD_CommunicateWithPICC(	byte command,		///< The command to execute. One of
 
 	// Wait for the command to complete.
 	// In PCD_Init() we set the TAuto flag in TModeReg. This means the timer automatically starts when the PCD stops transmitting.
-	// Each iteration of the do-while-loop takes 17.86�s.
-	i = 200000;
+	// Each iteration of the do-while-loop takes 17.86ms.
+	i = Clock_getTicks();
 	while (1) {
 		n = PCD_ReadRegister(ComIrqReg);	// ComIrqReg[7..0] bits are: Set1 TxIRq RxIRq IdleIRq HiAlertIRq LoAlertIRq ErrIRq TimerIRq
 		if (n & waitIRq) {					// One of the interrupts that signal success has been set.
@@ -375,7 +376,7 @@ byte PCD_CommunicateWithPICC(	byte command,		///< The command to execute. One of
 		if (n & 0x01) {						// Timer interrupt - nothing received in 25ms
 			return STATUS_TIMEOUT;
 		}
-		if (--i == 0) {						// The emergency break. If all other condions fail we will eventually terminate on this one after 35.7ms. Communication with the MFRC522 might be down.
+		if (Clock_getTicks()-i > 5) {						// The emergency break. If all other condions fail we will eventually terminate on this one after 35.7ms. Communication with the MFRC522 might be down.
 			return STATUS_TIMEOUT;
 		}
 	}
@@ -1218,8 +1219,9 @@ void PICC_DumpMifareClassicToSerial(	Uid *uid,		///< Pointer to Uid struct retur
 	if (no_of_sectors) {
 		System_printf("Sector Block   0  1  2  3   4  5  6  7   8  9 10 11  12 13 14 15  AccessBits\n");
 		System_flush();
-		char i = 0;
-		for (i = no_of_sectors - 1; i >= 0; i--) {
+		signed char i = 0;
+		//for (i = no_of_sectors - 1; i >= 0; i--) {
+		for (i = 0; i >= 0; i--) {
 			PICC_DumpMifareClassicSectorToSerial(uid, key, i);
 		}
 	}
@@ -1422,4 +1424,42 @@ bool PICC_ReadCardSerial() {
 	return (result == STATUS_OK);
 } // End PICC_ReadCardSerial()
 
+bool digitalSelfTestPass() {
+  int i;
+  byte n;
 
+     byte selfTestResultV2[] = {0x00, 0xEB, 0x66, 0xBA, 0x57, 0xBF, 0x23, 0x95,
+                          0xD0, 0xE3, 0x0D, 0x3D, 0x27, 0x89, 0x5C, 0xDE,
+                          0x9D, 0x3B, 0xA7, 0x00, 0x21, 0x5B, 0x89, 0x82,
+                          0x51, 0x3A, 0xEB, 0x02, 0x0C, 0xA5, 0x00, 0x49,
+                          0x7C, 0x84, 0x4D, 0xB3, 0xCC, 0xD2, 0x1B, 0x81,
+                          0x5D, 0x48, 0x76, 0xD5, 0x71, 0x61, 0x21, 0xA9,
+                          0x86, 0x96, 0x83, 0x38, 0xCF, 0x9D, 0x5B, 0x6D,
+                          0xDC, 0x15, 0xBA, 0x3E, 0x7D, 0x95, 0x3B, 0x2F};
+      byte *selfTestResult;
+
+      selfTestResult = selfTestResultV2;
+
+      PCD_WriteRegister(CommandReg, PCD_SoftReset);
+      PCD_WriteRegister(FIFODataReg, 0x00);
+      PCD_WriteRegister(CommandReg, PCD_Mem);
+      PCD_WriteRegister(AutoTestReg, 0x09);
+      PCD_WriteRegister(FIFODataReg, 0x00);
+      PCD_WriteRegister(CommandReg, PCD_CalcCRC);
+
+       // Wait for the self test to complete.
+       i = 0xFF;
+       do {
+         n = PCD_ReadRegister(DivIrqReg);
+         i--;
+       } while ((i != 0) && !(n & 0x04));
+
+       for (i=0; i < 64; i++) {
+         if (PCD_ReadRegister(FIFODataReg) != selfTestResult[i]) {
+           System_printf("%x", i);
+           System_flush();
+           return false;
+         }
+       }
+       return true;
+     }

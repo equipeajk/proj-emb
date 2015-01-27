@@ -45,6 +45,7 @@
 
 
 #include <ti/drivers/SPI.h>
+#include <ti/sysbios/knl/Clock.h>
 
 /* Example/Board Header files */
 #include "inc/hw_memmap.h"
@@ -58,68 +59,72 @@
 SPI_Handle spiHandle;
 SPI_Transaction masterTransaction;
 extern Uid uid;
+Uint32 tempoLED;
+bool led = false;
 
-void hardware_init(void);
+int hardware_init(void);
 
 
 
 int main(void)
 {
 	/* Call board init functions. */
-		Board_initGeneral();
-		// Board_initEMAC();
-		Board_initGPIO();
-		// Board_initI2C();
-		// Board_initSDSPI();
-//		byte * TxBufferTeste;
-//		TxBufferTeste = Memory_alloc(NULL, 2*sizeof(byte), 8, NULL);
-//
-//		TxBufferTeste[0] =2;
-		Board_initSPI();
-		// Board_initUART();
-		// Board_initUSB(Board_USBDEVICE);
-		// Board_initUSBMSCHFatFs();
-		// Board_initWatchdog();
-		/* Turn on user LED */
-		hardware_init();
+	Board_initGeneral();
+	Board_initGPIO();
+	Board_initSPI();
 
+	//Inicializa as portas que serao utilizadas e o SPI
+	if(hardware_init())
+	{
 		/* Start BIOS */
 		BIOS_start();
+	}
 }
 
 
-void hardware_init()
+int hardware_init()
 {
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPION);
 	GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_3);
 	GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_4);
-
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_3, 0);
-//	for(x = 0; x < 6000000; x++);
 
-	//for(x = 0; x < 6000000; x++);
-}
-
-void SPI_Master()
-{
-
+	//Inicializa SPI
 	spiHandle = SPI_open(Board_SPI0, NULL);
 	if (spiHandle == NULL) {
 		System_abort("Error initializing SPI\n");
+		return 0;
 	}
 	else {
 		System_printf("SPI initialized\n");
 	}
-	Task_sleep(50);
+	return 1;
+}
+
+
+
+
+void PCDCheck_task()
+{
+
+	//Hard reset no PCD
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_3, GPIO_PIN_3);
-	Task_sleep(50);
-//	PCD_WriteRegister(CommandReg, PCD_SoftReset);
+	Task_sleep(5);
 
 	while (PCD_ReadRegister(CommandReg) & (1<<4)) {
-			// PCD still restarting - unlikely after waiting 50ms, but better safe than sorry.
+		// PCD still restarting - unlikely after waiting 50ms, but better safe than sorry.
+	}
+	//Faz o auto-test
+	bool test = digitalSelfTestPass();
+	if(test){
+		System_printf("\nSelf Test Successful\n");
+		System_flush();
 	}
 
-	/* Initialize master SPI transaction structure */
+	PCD_WriteRegister(CommandReg, PCD_SoftReset);
+
+
+	//Inicializa o PCD, liga a antena
 	byte TMode = PCD_ReadRegister(TModeReg);
 	PCD_WriteRegister(TModeReg, 0x80);	// TAuto=1; timer starts automatically at the end of the transmission in all communication modes at all speeds
 	TMode = PCD_ReadRegister(TModeReg);
@@ -130,25 +135,61 @@ void SPI_Master()
 	PCD_WriteRegister(TxASKReg, 0x40);		// Default 0x00. Force a 100 % ASK modulation independent of the ModGsPReg register setting
 	PCD_WriteRegister(ModeReg, 0x3D);		// Default 0x3F. Set the preset value for the CRC coprocessor for the CalcCRC command to 0x6363 (ISO 14443-3 part 6.2.4)
 
- 	PCD_AntennaOn();
- 	PCD_SetAntennaGain(RxGain_max);
- 	byte gain = PCD_GetAntennaGain();
-	uint8_t ver = PCD_ReadRegister(VersionReg);
-	System_printf("%x",ver);
-	System_flush();
+	PCD_AntennaOn();
 
-
+	//Loop da task
+	GPIO_write(Board_LED0, Board_LED_ON);
 	for(;;){
+		//Desliga o LED de confirmação após 2 segundos.
+		if(Clock_getTicks() - tempoLED > 200 && led){
+			GPIO_write(Board_LED1, Board_LED_OFF);
+			led = false;
+		}
 		if(PICC_IsNewCardPresent()){
 			System_printf("Novo cartao encontrado\n");
 			System_flush();
 			byte serial = PICC_ReadCardSerial();
 			if(serial){
+				//Faz o que quiser com o cartao, ja possui o UID do cartao.
+
+				/*TODO:
+				Calcula a senha baseado no UID
+				Autentica com a senha encontrada
+				Lê os dados relevantes
+				Decodifica os dados
+				Decrementa o possível contador de transações
+				Codifica o novo contador e escreve no cartão
+				Chama a task que envia para o servidor
+				*/
+
 				PICC_DumpToSerial(&uid);
+				GPIO_write(Board_LED1, Board_LED_ON);
+				tempoLED = Clock_getTicks();
+				led = true;
+				//Exemplo de como escrever em um bloco do cartao
+				/*MIFARE_Key key;
+				byte i = 0;
+				for (i = 0; i < 6; i++) {
+					key.keyByte[i] = 0xFF;
+				}
+				byte status;
+				status = PCD_Authenticate(PICC_CMD_MF_AUTH_KEY_A, 0x3, &key, &uid);
+				if (status != STATUS_OK) {
+					System_printf("PCD_Authenticate() failed: ");
+					System_printf(GetStatusCodeName(status));
+					System_flush();
+				}
+				else{
+					byte write[] = { 0xBA, 0xBA, 0xCA, 0xBA, 0xBA, 0xCA, 0xBA,
+							0xBA, 0xCA, 0xBA, 0xBA, 0xCA, 0xBA, 0xBA, 0xCA, 0xBA };
+					MIFARE_Write(0x1, &write, 16);
+				}
+				PCD_StopCrypto1();*/
+
 			}
 
 		}
-		Task_sleep(100);
+		Task_sleep(20);
 	}
 	SPI_close(spiHandle);
 
