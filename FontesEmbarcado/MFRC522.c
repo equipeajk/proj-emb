@@ -22,6 +22,8 @@
 #include "inc/hw_types.h"
 #include <xdc/runtime/System.h>
 #include <ti/sysbios/knl/Clock.h>
+#include "crypto.h"
+
 extern SPI_Handle spiHandle;
 extern SPI_Transaction masterTransaction;
 
@@ -1138,7 +1140,7 @@ void PICC_DumpToSerial(Uid *uid	///< Pointer to Uid struct returned from a succe
 	byte i = 0;
 	for (i = 0; i < uid->size; i++) {
 		System_printf(uid->uidByte[i] < 0x10 ? " 0" : " ");
-		System_printf(uid->uidByte[i]);
+		System_printf("%x",uid->uidByte[i]);
 	}
 	System_printf("\n");
 
@@ -1220,8 +1222,10 @@ void PICC_DumpMifareClassicToSerial(	Uid *uid,		///< Pointer to Uid struct retur
 		System_printf("Sector Block   0  1  2  3   4  5  6  7   8  9 10 11  12 13 14 15  AccessBits\n");
 		System_flush();
 		signed char i = 0;
+
+		memcpy(key->keyByte, cardKey, 6);
 		//for (i = no_of_sectors - 1; i >= 0; i--) {
-		for (i = 0; i >= 0; i--) {
+		for (i = 5; i >= 5; i--) {
 			PICC_DumpMifareClassicSectorToSerial(uid, key, i);
 		}
 	}

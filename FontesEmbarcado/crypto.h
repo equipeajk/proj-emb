@@ -19,7 +19,9 @@
 void genAESKey(Uid *uid);
 void encryptAES(byte *plainText, int size, byte *cipher);
 void decryptAES(byte *plainText, int size, byte *cipher);
+void genCardKey(Uid *uid, byte setor);
 
 byte aesKey[SHA_DIGEST_SIZE];
+byte cardKey[SHA_DIGEST_SIZE];
 
 #endif /* CRYPTO_H_ */

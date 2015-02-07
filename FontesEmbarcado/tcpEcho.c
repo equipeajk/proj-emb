@@ -89,6 +89,7 @@
 
 #include "MFRC522.h"
 #include "crypto.h"
+#include "cardData.h"
 
 #define TCPPACKETSIZE 1024
 #define TCPPORT 11111
@@ -327,13 +328,29 @@ void PCDCheck_task()
 				Codifica o novo contador e escreve no cart�o
 				Chama a task que envia para o servidor
 				 */
+
+
+				Card card;
+				byte codigo[] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+						0x0, 0x0, 0x1, 0x04, 0x78, 0x41 };
+				byte curso[] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+										0x0, 0x0, 0x0, 0x0, 0x2, 0x12 };
+				byte flag[] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+						0x0, 0x0, 0x0, 0x0, 0x0, 0x1 };
+				memcpy(card.cod, codigo, sizeof(codigo) );
+				memcpy(card.curso, curso, sizeof(curso) );
+				memcpy(card.flag, flag, sizeof(flag) );
+
+				//regNewCard(&card, &uid);
+
 				genAESKey(&uid);
 
 				byte plainText[] = {0x30, 0x0E, 0x06, 0x03, 0x55, 0x04, 0x08, 0x0C, 0x07, 0x4D,
 						0x6F, 0x6E, 0x74, 0x61, 0x6E, 0x61 };
 				byte cipher[16];
-				encryptAES(plainText, 16, cipher);
-				decryptAES(plainText, 16, cipher);
+				//encryptAES(plainText, 16, cipher);
+				//decryptAES(plainText, 16, cipher);
+				genCardKey(&uid, 5);
 				PICC_DumpToSerial(&uid);
 				GPIO_write(Board_LED1, Board_LED_ON);
 				tempoLED = Clock_getTicks();

@@ -12,6 +12,26 @@ const unsigned char masterKey[]  =
 		0xA0, 0x03, 0x02, 0x01, 0x02, 0x02, 0x09, 0x00
 };
 
+void genCardKey(Uid *uid, byte setor)
+{
+	byte key[21];
+
+	memcpy(key, uid->uidByte, uid->size);
+	memcpy(key+uid->size, masterKey, sizeof(masterKey));
+	key[20] = setor;
+
+	Sha    hash;
+	int    ret;
+
+	ret = wc_InitSha(&hash);
+	if (ret != 0) {
+		return;
+	}
+	wc_ShaUpdate(&hash, key, sizeof(key));
+	wc_ShaFinal(&hash, cardKey);
+
+}
+
 void genAESKey(Uid *uid)
 {
 	byte key[20];
