@@ -64,7 +64,7 @@ void PCD_WriteMultipleRegister(	byte reg,		///< The register to write to. One of
 	byte *TxBufferDin;
 	byte *RxBufferDin;
 
-	bool transferOK;
+	//bool transferOK;
 
 	TxBufferDin=Memory_alloc(NULL,((count+1)*sizeof(byte)), 8, NULL);
 	RxBufferDin=Memory_alloc(NULL,((count+1)*sizeof(byte)), 8, NULL);
@@ -79,7 +79,8 @@ void PCD_WriteMultipleRegister(	byte reg,		///< The register to write to. One of
 	masterTransaction.txBuf = (Ptr)TxBufferDin;
 	masterTransaction.rxBuf = (Ptr)RxBufferDin;
 
-	transferOK = SPI_transfer(spiHandle, &masterTransaction);
+	//transferOK =
+	SPI_transfer(spiHandle, &masterTransaction);
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4);
 	Memory_free(NULL, TxBufferDin, ((count+1)*sizeof(byte)));
 	Memory_free(NULL, RxBufferDin, ((count+1)*sizeof(byte)));
@@ -94,8 +95,8 @@ void PCD_WriteMultipleRegister(	byte reg,		///< The register to write to. One of
 byte PCD_ReadRegister(	byte reg	///< The register to read from. One of the PCD_Register enums.
 								) {
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0);
-	byte value;
-	bool transferOK;
+	//byte value;
+	//bool transferOK;
 
 	TxBuffer[0] = 0x80 | (reg & 0x7E);
 	TxBuffer[1] = 0;
@@ -105,7 +106,8 @@ byte PCD_ReadRegister(	byte reg	///< The register to read from. One of the PCD_R
 	masterTransaction.txBuf = (Ptr)TxBuffer;
 	masterTransaction.rxBuf = (Ptr)RxBuffer;
 	/* Initiate SPI transfer */
-	transferOK = SPI_transfer(spiHandle, &masterTransaction);
+	//transferOK =
+	SPI_transfer(spiHandle, &masterTransaction);
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4);
 	return RxBuffer[1];
 } // End PCD_ReadRegister()
@@ -125,14 +127,14 @@ void PCD_ReadMultipleRegister(	byte reg,		///< The register to read from. One of
 	byte *TxBufferDin;
 	byte *RxBufferDin;
 
-	bool transferOK;
+	//bool transferOK;
 
 	TxBufferDin=Memory_alloc(NULL,((count+1)*sizeof(byte)), 8, NULL);
 	RxBufferDin=Memory_alloc(NULL,((count+1)*sizeof(byte)), 8, NULL);
 
 	//Serial.print("Reading "); 	Serial.print(count); Serial.println(" bytes from register.");
 	byte address = 0x80 | (reg & 0x7E);		// MSB == 1 is for reading. LSB is not used in address. Datasheet section 8.1.2.3.
-	byte index = 0;							// Index in values array.
+	//byte index = 0;							// Index in values array.
 
 	byte j = 0;
 	for (j= 0; j < count; j++){
@@ -145,7 +147,8 @@ void PCD_ReadMultipleRegister(	byte reg,		///< The register to read from. One of
 	masterTransaction.rxBuf = (Ptr)RxBufferDin;
 
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0);
-	transferOK = SPI_transfer(spiHandle, &masterTransaction);
+	//transferOK =
+	SPI_transfer(spiHandle, &masterTransaction);
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4);
 
 	if(rxAlign){
@@ -512,7 +515,7 @@ byte PICC_Select(	Uid *uid,			///< Pointer to Uid struct. Normally output, but c
 	byte count;
 	byte index;
 	byte uidIndex;					// The first index in uid->uidByte[] that is used in the current Cascade Level.
-	char currentLevelKnownBits;		// The number of known UID bits in the current Cascade Level.
+	signed char currentLevelKnownBits;		// The number of known UID bits in the current Cascade Level.
 	byte buffer[9];					// The SELECT/ANTICOLLISION commands uses a 7 byte standard frame + 2 bytes CRC_A
 	byte bufferUsed;				// The number of bytes used in the buffer, ie the number of bytes to transfer to the FIFO.
 	byte rxAlign;					// Used in BitFramingReg. Defines the bit position for the first bit received.
@@ -575,7 +578,6 @@ byte PICC_Select(	Uid *uid,			///< Pointer to Uid struct. Normally output, but c
 
 			default:
 				return STATUS_INTERNAL_ERROR;
-				break;
 		}
 
 		// How many UID bits are known in this Cascade Level?
@@ -1057,18 +1059,18 @@ byte PCD_MIFARE_Transceive(	byte *sendData,		///< Pointer to the data to transfe
 const char *GetStatusCodeName(byte code	///< One of the StatusCode enums.
 										) {
 	switch (code) {
-		case STATUS_OK:				return "Success."; break;
-		case STATUS_ERROR:			return "Error in communication."; break;
-		case STATUS_COLLISION:		return "Collission detected."; break;
-		case STATUS_TIMEOUT:		return "Timeout in communication."; break;
-		case STATUS_NO_ROOM:		return "A buffer is not big enough."; break;
-		case STATUS_INTERNAL_ERROR:	return "Internal error in the code. Should not happen."; break;
-		case STATUS_INVALID:		return "Invalid argument."; break;
-		case STATUS_CRC_WRONG:		return "The CRC_A does not match."; break;
-		case STATUS_MIFARE_NACK:	return "A MIFARE PICC responded with NAK."; break;
+		case STATUS_OK:				return "Success.";
+		case STATUS_ERROR:			return "Error in communication.";
+		case STATUS_COLLISION:		return "Collission detected.";
+		case STATUS_TIMEOUT:		return "Timeout in communication.";
+		case STATUS_NO_ROOM:		return "A buffer is not big enough.";
+		case STATUS_INTERNAL_ERROR:	return "Internal error in the code. Should not happen.";
+		case STATUS_INVALID:		return "Invalid argument.";
+		case STATUS_CRC_WRONG:		return "The CRC_A does not match.";
+		case STATUS_MIFARE_NACK:	return "A MIFARE PICC responded with NAK.";
 		default:
 			return "Unknown error";
-			break;
+
 	}
 } // End GetStatusCodeName()
 
@@ -1084,13 +1086,13 @@ byte PICC_GetType(byte sak		///< The SAK byte returned from PICC_Select().
 	}
 
 	switch (sak) {
-		case 0x09:	return PICC_TYPE_MIFARE_MINI;	break;
-		case 0x08:	return PICC_TYPE_MIFARE_1K;		break;
-		case 0x18:	return PICC_TYPE_MIFARE_4K;		break;
-		case 0x00:	return PICC_TYPE_MIFARE_UL;		break;
+		case 0x09:	return PICC_TYPE_MIFARE_MINI;
+		case 0x08:	return PICC_TYPE_MIFARE_1K;
+		case 0x18:	return PICC_TYPE_MIFARE_4K;
+		case 0x00:	return PICC_TYPE_MIFARE_UL;
 		case 0x10:
-		case 0x11:	return PICC_TYPE_MIFARE_PLUS;	break;
-		case 0x01:	return PICC_TYPE_TNP3XXX;		break;
+		case 0x11:	return PICC_TYPE_MIFARE_PLUS;
+		case 0x01:	return PICC_TYPE_TNP3XXX;
 		default:	break;
 	}
 
@@ -1112,17 +1114,17 @@ byte PICC_GetType(byte sak		///< The SAK byte returned from PICC_Select().
 const char *PICC_GetTypeName(byte piccType	///< One of the PICC_Type enums.
 										) {
 	switch (piccType) {
-		case PICC_TYPE_ISO_14443_4:		return "PICC compliant with ISO/IEC 14443-4";		break;
-		case PICC_TYPE_ISO_18092:		return "PICC compliant with ISO/IEC 18092 (NFC)";	break;
-		case PICC_TYPE_MIFARE_MINI:		return "MIFARE Mini, 320 bytes";					break;
-		case PICC_TYPE_MIFARE_1K:		return "MIFARE 1KB";								break;
-		case PICC_TYPE_MIFARE_4K:		return "MIFARE 4KB";								break;
-		case PICC_TYPE_MIFARE_UL:		return "MIFARE Ultralight or Ultralight C";			break;
-		case PICC_TYPE_MIFARE_PLUS:		return "MIFARE Plus";								break;
-		case PICC_TYPE_TNP3XXX:			return "MIFARE TNP3XXX";							break;
-		case PICC_TYPE_NOT_COMPLETE:	return "SAK indicates UID is not complete.";		break;
+		case PICC_TYPE_ISO_14443_4:		return "PICC compliant with ISO/IEC 14443-4";
+		case PICC_TYPE_ISO_18092:		return "PICC compliant with ISO/IEC 18092 (NFC)";
+		case PICC_TYPE_MIFARE_MINI:		return "MIFARE Mini, 320 bytes";
+		case PICC_TYPE_MIFARE_1K:		return "MIFARE 1KB";
+		case PICC_TYPE_MIFARE_4K:		return "MIFARE 4KB";
+		case PICC_TYPE_MIFARE_UL:		return "MIFARE Ultralight or Ultralight C";
+		case PICC_TYPE_MIFARE_PLUS:		return "MIFARE Plus";
+		case PICC_TYPE_TNP3XXX:			return "MIFARE TNP3XXX";
+		case PICC_TYPE_NOT_COMPLETE:	return "SAK indicates UID is not complete.";
 		case PICC_TYPE_UNKNOWN:
-		default:						return "Unknown type";								break;
+		default:						return "Unknown type";
 	}
 } // End PICC_GetTypeName()
 

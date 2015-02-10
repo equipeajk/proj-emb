@@ -21,8 +21,6 @@
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/timer.h"
-#include "Board.h"
-#include <stdbool.h>
 #include "lcd44780_LP.h"
 
 void initLCD() {

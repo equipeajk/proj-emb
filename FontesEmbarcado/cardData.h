@@ -2,7 +2,7 @@
  * cardData.h
  *
  *  Created on: 06/02/2015
- *      Author: João
+ *      Author: Joï¿½o
  */
 
 #ifndef CARDDATA_H_
@@ -19,5 +19,7 @@ typedef struct {
 	} Card;
 
 void regNewCard(Card* card, Uid *uid);
+byte readBlock(int block, Uid *uid, byte* buffer);
+byte writeBlock(int block, Uid *uid, byte* buffer);
 
 #endif /* CARDDATA_H_ */

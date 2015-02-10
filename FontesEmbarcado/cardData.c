@@ -2,7 +2,7 @@
  * cardData.c
  *
  *  Created on: 06/02/2015
- *      Author: João
+ *      Author: Joï¿½o
  */
 #include "cardData.h"
 
@@ -10,7 +10,7 @@ void regNewCard(Card* card, Uid *uid)
 {
 	//Formatar cartao
 	//Gerar senha do cartao
-	byte setor = 5;
+	byte setor = 1;
 	genCardKey(uid, setor);
 
 
@@ -46,11 +46,70 @@ void regNewCard(Card* card, Uid *uid)
 		MIFARE_Write(setor*4+3, trailer, 16);
 	}
 	PCD_StopCrypto1();
-
-
-
-
 }
 
-void incrementaContador(Card* card, Uid *uid)
+/* Le o conteudo do block e o decifra */
+byte readBlock(int block, Uid *uid, byte* buffer)
+{
+	genCardKey(uid, block/4);
+	byte sizeBlock = 18;
+	byte blockBuffer[sizeBlock];
+	byte status;
+	status = PCD_Authenticate(PICC_CMD_MF_AUTH_KEY_A, ((block/4)*4)+3, &mifareCardKey, uid);
+	if (status != STATUS_OK)
+	{
+		System_printf("PCD_Authenticate() failed: ");
+		System_printf(GetStatusCodeName(status));
+		System_printf("\n");
+		System_flush();
+		return 0;
+	}
+	status = MIFARE_Read(block, blockBuffer, &sizeBlock);
+	if (status != STATUS_OK)
+	{
+		System_printf("MIFARE_Read() failed: ");
+		System_printf(GetStatusCodeName(status));
+		System_printf("\n");
+		System_flush();
+		return 0;
+	}
+	decryptAES(buffer, 16, blockBuffer);
+	return 1;
+}
 
+/* cifra o buffer e escreve no bloco */
+byte writeBlock(int block, Uid *uid, byte* buffer)
+{
+	genCardKey(uid, block/4);
+	byte cipher[16];
+	if(block != ((block/4)*4)+3)
+		encryptAES(buffer, 16, cipher);
+	byte status;
+//	int x = 0;
+//	for(x = 0; x < 6; x++)
+//	{
+//		mifareCardKey.keyByte[x] = 0xFF;
+//	}
+	status = PCD_Authenticate(PICC_CMD_MF_AUTH_KEY_A, ((block/4)*4)+3, &mifareCardKey, uid);
+	if (status != STATUS_OK)
+	{
+		System_printf("PCD_Authenticate() failed: ");
+		System_printf(GetStatusCodeName(status));
+		System_printf("\n");
+		System_flush();
+		return 0;
+	}
+	if(block != ((block/4)*4)+3)
+		status = MIFARE_Write(block, cipher, 16);
+	else
+		status = MIFARE_Write(block, buffer, 16);
+	if (status != STATUS_OK)
+	{
+		System_printf("PCD_Authenticate() failed: ");
+		System_printf(GetStatusCodeName(status));
+		System_printf("\n");
+		System_flush();
+		return 0;
+	}
+	return 1;
+}

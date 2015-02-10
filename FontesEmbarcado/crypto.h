@@ -23,5 +23,6 @@ void genCardKey(Uid *uid, byte setor);
 
 byte aesKey[SHA_DIGEST_SIZE];
 byte cardKey[SHA_DIGEST_SIZE];
+MIFARE_Key mifareCardKey;
 
 #endif /* CRYPTO_H_ */

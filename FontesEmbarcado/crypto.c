@@ -29,7 +29,10 @@ void genCardKey(Uid *uid, byte setor)
 	}
 	wc_ShaUpdate(&hash, key, sizeof(key));
 	wc_ShaFinal(&hash, cardKey);
-
+	int i;
+	for (i = 0; i < 6; i++) {
+		mifareCardKey.keyByte[i] = cardKey[i];
+	}
 }
 
 void genAESKey(Uid *uid)
