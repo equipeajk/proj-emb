@@ -97,6 +97,7 @@
 #define TCPPACKETSIZE 64
 #define TCPPORT 11111
 #define IP_ADDR "104.41.3.85"
+//#define IP_ADDR "192.168.2.101"
 
 SPI_Handle spiHandle;
 Semaphore_Handle semNet; // eh postado qnd esta conectado
@@ -111,6 +112,7 @@ int hardware_init(void);
 void exitApp(WOLFSSL_CTX* ctx);
 void intTobyteArray(uint32_t n, byte* array);
 uint32_t byteArrayToInt(byte* array);
+void errorCard();
 
 typedef struct MsgObj {
 	char* val;
@@ -118,7 +120,7 @@ typedef struct MsgObj {
 
 const unsigned char EA_id[]  =
 {
-		0x30, 0x82, 0x04, 0xAA, 0x30
+		0x30, 0x82, 0x04, 0xAA
 };
 
 void intTobyteArray(uint32_t n, byte* array)
@@ -145,6 +147,8 @@ uint32_t byteArrayToInt(byte* array)
  */
 Void tcpHandler_task()
 {
+	initLCD();
+	LCDWriteText("Buscando rede", 0, 0);
 	int ret;
 	struct sockaddr_in servAddr;
 	int sockfd;
@@ -194,7 +198,7 @@ Void tcpHandler_task()
 		sockfd = socket(AF_INET, SOCK_STREAM, 0);
 		if (sockfd < 0) {
 			System_printf("tcpHandler: socket failed\n");
-			Task_sleep(2000);
+			Task_sleep(1000);
 			continue;
 		}
 		memset((char *) &servAddr, 0, sizeof(servAddr));
@@ -204,7 +208,7 @@ Void tcpHandler_task()
 		ret = connect(sockfd, (struct sockaddr *) &servAddr, sizeof(servAddr));
 		if (ret < 0) {
 			fdClose((SOCKET) sockfd);
-			Task_sleep(2000);
+			Task_sleep(1000);
 			continue;
 		}
 	} while (ret != 0);
@@ -232,6 +236,8 @@ Void tcpHandler_task()
 	 END_LINE */
 
 	if (ret == SSL_SUCCESS) {
+		LCDCommand(LCD_CLEARDISPLAY);
+		LCDWriteText("Conectando...", 0, 0);
 		/* Get a buffer to receive incoming packets. Use the default heap. */
 		char *buffer;
 		buffer = Memory_alloc(NULL, TCPPACKETSIZE, 0, &eb);
@@ -243,17 +249,18 @@ Void tcpHandler_task()
 		int nbytes;
 		bool internal_flag = true;
 		/* Inicia sessão */
-		char initMsg[6];
+		char initMsg[5];
 		initMsg[0] = 1;
-		memcpy(initMsg+1, EA_id, 5);
+		memcpy(initMsg+1, EA_id, 4);
 		sockfd = wolfSSL_get_fd(ssl);
-		if (wolfSSL_write(ssl, initMsg, strlen(initMsg)) != strlen(initMsg)) {
+		if (wolfSSL_write(ssl, initMsg, 5) != 5) {
 			ret = wolfSSL_get_error(ssl, 0);
 			System_printf("Write error: %i.\n", ret);
 			System_flush();
 		}
 		/* Wait for server response */
-		//TODO: timeout
+		//TODO: timeout nonblocking
+
 		nbytes = wolfSSL_read(ssl, (char *) buffer, TCPPACKETSIZE);
 		if (nbytes > 0) {
 			if(buffer[0] == 2) {
@@ -277,7 +284,7 @@ Void tcpHandler_task()
 			}
 			//TODO: verificar se vai bloquear ou retornar erro e timeout
 			/* Send message to the server */
-			if (wolfSSL_write(ssl, msg.val, strlen(msg.val)) != strlen(msg.val)) {
+			if (wolfSSL_write(ssl, msg.val, 17) != 17) {
 				ret = wolfSSL_get_error(ssl, 0);
 				System_printf("Write error: %i.\n", ret);
 				System_flush();
@@ -290,10 +297,13 @@ Void tcpHandler_task()
 				}
 			}
 			/* success */
-			System_printf("Heard: \"%s\".\n", buffer);
+			System_printf("Heard: \"%d\".\n", buffer[0]);
+			System_flush();
+
 			serverAnswer = buffer[0];
 			Semaphore_post(semNet);
 		}
+
 		Memory_free(NULL, buffer, TCPPACKETSIZE);
 		/* Encerra conexão */
 		wolfSSL_free(ssl);
@@ -317,11 +327,22 @@ Void tcpHandler_task()
  */
 void exitApp(WOLFSSL_CTX* ctx) {
 	System_flush();
+	LCDCommand(LCD_CLEARDISPLAY);
+	LCDWriteText("Erro: TCP.", 0, 0);
 	if (ctx != NULL) {
 		wolfSSL_CTX_free(ctx);
 		wolfSSL_Cleanup();
 	}
-	//BIOS_exit(-1);
+	BIOS_exit(-1);
+}
+
+void errorCard() {
+	LCDCommand(LCD_CLEARDISPLAY);
+	LCDWriteText("Erro na leitura", 0, 0);
+	LCDWriteText("do cartao", 1, 0);
+	PICC_HaltA();
+	PCD_StopCrypto1();
+	PICC_HaltA();
 }
 
 /*
@@ -330,8 +351,8 @@ void exitApp(WOLFSSL_CTX* ctx) {
  */
 void PCDCheck_task()
 {
+	bool cardError = false;
 	//Hard reset no PCD
-	initLCD();
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_3, GPIO_PIN_3);
 	Task_sleep(50);
 	while (PCD_ReadRegister(CommandReg) & (1<<4)) {
@@ -343,7 +364,11 @@ void PCDCheck_task()
 		System_printf("\nSelf Test Successful\n");
 		System_flush();
 	}
-	//TODO: else
+	else {
+		LCDCommand(LCD_CLEARDISPLAY);
+		LCDWriteText("Erro: leitor RF.", 0, 0);
+		BIOS_exit(-1);
+	}
 	PCD_WriteRegister(CommandReg, PCD_SoftReset);
 	//Inicializa o PCD, liga a antena
 	byte TMode = PCD_ReadRegister(TModeReg);
@@ -356,31 +381,35 @@ void PCDCheck_task()
 	PCD_WriteRegister(ModeReg, 0x3D);		// Default 0x3F. Set the preset value for the CRC coprocessor for the CalcCRC command to 0x6363 (ISO 14443-3 part 6.2.4)
 	PCD_AntennaOn();
 	/*TODO Espera conectar com o servidor */
-	//Semaphore_pend(semNet, BIOS_WAIT_FOREVER);
-	LCDWriteText("Passe o cartao", 0, 0);
+	Semaphore_pend(semNet, BIOS_WAIT_FOREVER);
+	LCDWriteText("Aprox o cartao", 0, 0);
 
 	//Loop da task
 	GPIO_write(Board_LED0, Board_LED_ON);
 	for(;;)
 	{
 		//Desliga o LED de confirmacao apos 2 segundos.
-		if(Clock_getTicks() - tempoLED > 3000 && led)
+		if(led && Clock_getTicks() - tempoLED > 3000)
 		{
 			GPIO_write(Board_LED1, Board_LED_OFF);
 			led = false;
+			cardError = false;
 			LCDCommand(LCD_CLEARDISPLAY);
 			LCDCommand(LCD_BLINKON|LCD_CURSORON);
-			LCDWriteText("Passe o cartao", 0, 0);
+			LCDWriteText("Aprox o cartao", 0, 0);
 		}
-		if(PICC_IsNewCardPresent()){
+		if(!cardError && PICC_IsNewCardPresent())
+		{
 			System_printf("Novo cartao encontrado\n");
 			System_flush();
 			/* Preenche uid */
 			byte serial = PICC_ReadCardSerial();
 			if(serial)
 			{
+				tempoLED = Clock_getTicks();
+				led = true;
+				GPIO_write(Board_LED1, Board_LED_ON);
 				genAESKey(&uid);
-
 				//teste
 				//				byte codigo[16] = {0};
 				//				byte contador[16] = {0};
@@ -403,54 +432,65 @@ void PCDCheck_task()
 				//				}
 				//				writeBlock(23, &uid, trailer);
 				//teste fim
+				byte block4[16] = {0};
+				if(!readBlock(4, &uid, block4)){ //bloco 4 cod aluno
+					errorCard();
+					cardError = true;
+					continue;
+				}
 
-				byte block4[16];
-				readBlock(20, &uid, block4); //bloco 3 cod aluno
-				byte block5[16];
-				readBlock(21, &uid, block5); //bloco 4 contador
+				byte block5[16] = {0};
+				if(!readBlock(5, &uid, block5)) { //bloco 5 contador
+					errorCard();
+					cardError = true;
+					continue;
+				}
 				LCDCommand(LCD_CLEARDISPLAY);
 				char lcdcodigo[10];
 				sprintf(lcdcodigo, "%d", byteArrayToInt(block4+12));
+				//sprintf(lcdcodigo, "%d", *(uint32_t*)(block4+12));
 				LCDWriteText(lcdcodigo, 0, 4);
+
 				/* Cria a msg a ser enviada para o servidor */
 				MsgObj msg;
-				char msgAuth[18];
+				char msgAuth[17];
 				msgAuth[0] = 2; //operacao
 				memcpy(msgAuth+1, &(uid.uidByte), 4); //uid do cartao
 				memcpy(msgAuth+5, block4+12, 4); //codigo aluno
 				memcpy(msgAuth+9, block5+12, 4); //contador
-				memcpy(msgAuth+13, EA_id, 5); //uid da EA
+				memcpy(msgAuth+13, EA_id, 4); //uid da EA
 				msg.val = msgAuth;
 				Mailbox_post(myMailBox, &msg, BIOS_WAIT_FOREVER);
 
-				/*TODO: espera resposta o servidor */
-				//Semaphore_pend(semNet, BIOS_WAIT_FOREVER);
-				serverAnswer = 1;
+				/*TODO: espera resposta Do servidor */
+				Semaphore_pend(semNet, BIOS_WAIT_FOREVER);
 				switch(serverAnswer){
-					case 1:
-					{
-						LCDWriteText("OK", 1, 7);
-						// se resposta ok
-						/* incrementa e salva contador */
-						uint32_t newCont = byteArrayToInt(block5 + 12);
-						newCont++;
-						intTobyteArray(newCont, block5 + 12);
-						writeBlock(21, &uid, block5); // bloco 4
-						break;
-					}
-					default:
-						LCDWriteText("ERRO", 1, 5);
+				case 1:
+				{
+					LCDWriteText("Acesso liberado", 1, 0);
+					// se resposta ok
+					/* incrementa e salva contador */
+					uint32_t newCont = byteArrayToInt(block5 + 12);
+					newCont++;
+					intTobyteArray(newCont, block5 + 12);
+					writeBlock(5, &uid, block5); // bloco 5
+					break;
+				}
+				case 2:
+				case 5:
+				case 6:
+					LCDWriteText("Acesso negado", 1, 0);
+					break;
+				default:
+					LCDWriteText("Cartao invalido", 1, 0);
 				}
 				//PICC_DumpToSerial(&uid);
-				GPIO_write(Board_LED1, Board_LED_ON);
-				tempoLED = Clock_getTicks();
-				led = true;
 				PICC_HaltA();
 				PCD_StopCrypto1();
 				PICC_HaltA();
 			}
 		}
-		Task_sleep(200);
+		Task_sleep(400);
 	}
 	SPI_close(spiHandle);
 }
@@ -458,8 +498,11 @@ void PCDCheck_task()
 int hardware_init()
 {
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPION);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
 	GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_3);
-	GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_4);
+	GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_4);
+
+	//GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_4);
 	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_3, 0);
 
 	//Inicializa SPI
@@ -513,12 +556,6 @@ int main(void) {
 	 */
 	MYTIME_init();
 	MYTIME_settime(1423096611);
-
-	System_printf("Starting the TCP Echo example\nSystem provider is set to "
-			"SysMin. Halt the target to view any SysMin contents in"
-			" ROV.\n");
-	/* SysMin will only print to the console when you call flush or exit */
-	System_flush();
 
 	/*
 	 *  Create the Task that farms out incoming TCP connections.

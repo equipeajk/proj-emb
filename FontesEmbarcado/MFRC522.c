@@ -24,6 +24,12 @@
 #include <ti/sysbios/knl/Clock.h>
 #include "crypto.h"
 
+//#define FSS_OFF GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0)
+//#define FSS_ON  GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4)
+#define FSS_OFF GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4, 0)
+#define FSS_ON  GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4, GPIO_PIN_4)
+
+
 extern SPI_Handle spiHandle;
 extern SPI_Transaction masterTransaction;
 
@@ -40,16 +46,15 @@ unsigned char TxBuffer[2];
 void PCD_WriteRegister(	byte reg,		///< The register to write to. One of the PCD_Register enums.
 									byte value		///< The value to write.
 								) {
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0);
+	FSS_OFF;
 	TxBuffer[0] = reg & 0x7E;
 	TxBuffer[1] = value;
-
 	masterTransaction.count = 2;
 	masterTransaction.txBuf = (Ptr)TxBuffer;
 	masterTransaction.rxBuf = (Ptr)RxBuffer;
 	/* Initiate SPI transfer */
 	SPI_transfer(spiHandle, &masterTransaction);
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4);
+	FSS_ON;
 } // End PCD_WriteRegister()
 
 /**
@@ -60,7 +65,7 @@ void PCD_WriteMultipleRegister(	byte reg,		///< The register to write to. One of
 									byte count,		///< The number of bytes to write to the register
 									byte *values	///< The values to write. Byte array.
 								) {
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0);
+	FSS_OFF;
 	byte *TxBufferDin;
 	byte *RxBufferDin;
 
@@ -81,7 +86,7 @@ void PCD_WriteMultipleRegister(	byte reg,		///< The register to write to. One of
 
 	//transferOK =
 	SPI_transfer(spiHandle, &masterTransaction);
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4);
+	FSS_ON;
 	Memory_free(NULL, TxBufferDin, ((count+1)*sizeof(byte)));
 	Memory_free(NULL, RxBufferDin, ((count+1)*sizeof(byte)));
 
@@ -94,7 +99,7 @@ void PCD_WriteMultipleRegister(	byte reg,		///< The register to write to. One of
  */
 byte PCD_ReadRegister(	byte reg	///< The register to read from. One of the PCD_Register enums.
 								) {
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0);
+	FSS_OFF;
 	//byte value;
 	//bool transferOK;
 
@@ -108,7 +113,7 @@ byte PCD_ReadRegister(	byte reg	///< The register to read from. One of the PCD_R
 	/* Initiate SPI transfer */
 	//transferOK =
 	SPI_transfer(spiHandle, &masterTransaction);
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4);
+	FSS_ON;
 	return RxBuffer[1];
 } // End PCD_ReadRegister()
 
@@ -146,10 +151,10 @@ void PCD_ReadMultipleRegister(	byte reg,		///< The register to read from. One of
 	masterTransaction.txBuf = (Ptr)TxBufferDin;
 	masterTransaction.rxBuf = (Ptr)RxBufferDin;
 
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, 0);
+	FSS_OFF;
 	//transferOK =
 	SPI_transfer(spiHandle, &masterTransaction);
-	GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_4, GPIO_PIN_4);
+	FSS_ON;
 
 	if(rxAlign){
 		byte mask = 0;
