@@ -95,8 +95,8 @@
 
 //TODO: tamanho 1
 #define TCPPACKETSIZE 64
-#define TCPPORT 11111
-#define IP_ADDR "104.41.3.85"
+#define TCPPORT 443
+#define IP_ADDR "104.41.33.213"
 //#define IP_ADDR "192.168.2.101"
 
 SPI_Handle spiHandle;

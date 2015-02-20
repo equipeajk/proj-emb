@@ -105,7 +105,7 @@ byte writeBlock(int block, Uid *uid, byte* buffer)
 		status = MIFARE_Write(block, buffer, 16);
 	if (status != STATUS_OK)
 	{
-		System_printf("PCD_Authenticate() failed: ");
+		System_printf("MIFARE_Write() failed: ");
 		System_printf(GetStatusCodeName(status));
 		System_printf("\n");
 		System_flush();

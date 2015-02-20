@@ -21,6 +21,7 @@
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/timer.h"
+#include "driverlib/rom.h"
 #include "lcd44780_LP.h"
 
 void initLCD() {
@@ -39,6 +40,7 @@ void initLCD() {
 
 	GPIOPinWrite(LCDPORT, D4 | D5 | D6 | D7,  0x30 );
 	GPIOPinWrite(LCDPORT, E, 0x02);
+
 	tempo = Clock_getTicks();
 	while (Clock_getTicks() - tempo < 1){
 	}
